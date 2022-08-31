@@ -22,7 +22,7 @@ mongoose.connect('mongodb+srv://simpson:zri76KHKJ@cluster0.vvm1rmn.mongodb.net/?
 
 const app = express();
 
-//résout les pb de headers dans express
+//résout les pb de CORS headers dans express
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
