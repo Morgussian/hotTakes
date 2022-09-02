@@ -9,7 +9,9 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
-const sauce = require('./models/sauce');
+const Sauce = require('./models/sauces');
+
+const User = require('./models/user');
 
 const saucesRoute = require('./routes/sauces')
 const userRoutes = require('./routes/user');
@@ -22,6 +24,12 @@ mongoose.connect('mongodb+srv://simpson:zri76KHKJ@cluster0.vvm1rmn.mongodb.net/?
 
 const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({
+  extended: true
+}));
+
+
 //résout les pb de CORS headers dans express
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -30,21 +38,27 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.json());
+
+
 
 //routes c'est pour pouvoir donner n'importe quel chemin à un fichier?
-app.use('api/auth', userRoutes);
+app.use('/api/auth', userRoutes);
 
 //Utiliser la logique codée dans le fichier sauces.js dossier routes.
-app.use('api/sauces', saucesRoute);
+app.use('/api/sauces', saucesRoute);
+
 
 //Ajouter un nouvel utilisateur dans la DB
-app.post('/api/auth/signup', (req, res, next) => {
-  const user = new User ({
-    ...req.body
-  });
-  user.save();
-});
+// app.post('/api/auth/signup', (req, res, next) => {
+//   const user = new User ({
+//     ...req.body
+//   });
+  
+//   user.save()
+//     .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
+//     .catch(error => res.status(400).json({ error }));
+
+// });
 
 
 

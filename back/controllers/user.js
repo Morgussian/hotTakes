@@ -17,7 +17,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
 //inscription d'un user
-exports.signup = (res, req, next) => {
+exports.signup = (req, res, next) => {
 
     //méthode de hash du mot de passe, salé 10 fois
     bcrypt.hash(req.body.password, 10)
@@ -36,37 +36,39 @@ exports.signup = (res, req, next) => {
 };
 
 //connexion d'un user
-exports.login = (res, req, next) => {
+exports.login = (req, res, next) => {
+    res.status(200).json({ bonjour : 'tata'})
+}
 
-    //méthode de comparaison de user. Pourquoi une majuscule???
-    User.findOne({email : req.body.email})
-    .then(user => {
-        if(!user){
-            res.status(401).json({message : 'Identification impossible'});
-        } else {
-            //bcrypt compare le password du body de la requète au password user. password user est un hash créé dans la fonction exports.signup.
-            bcrypt.compare(req.body.password, user.password)
-            .then(valid => {
-                if(!valid){
-                    res.status(401).json({message : 'Identification impossible'});
-                } else {
-                    res.status(200).json({
-                        userId : user._id,
-                        token : jwt.sign(
-                            //donnée à encoder avec le token: payload
-                            {userId : user._id},
-                            'random_token_secret',
-                            {expiresIn : '24h'}
-                        )
-                    })
-                }
-            })
-            .catch(error => {
-                res.status(500).json({ error });
-            })
-        }
-    })
-    .catch(error => {
-        res.status(500).json({ error });
-    })
-};
+//     //méthode de comparaison de user. Pourquoi une majuscule???
+//     User.findOne({email : req.body.email})
+//     .then(user => {
+//         if(!user){
+//             res.status(401).json({message : 'Identification impossible'});
+//         } else {
+//             //bcrypt compare le password du body de la requète au password user. password user est un hash créé dans la fonction exports.signup.
+//             bcrypt.compare(req.body.password, user.password)
+//             .then(valid => {
+//                 if(!valid){
+//                     res.status(401).json({message : 'Identification impossible'});
+//                 } else {
+//                     res.status(200).json({
+//                         userId : user._id,
+//                         token : jwt.sign(
+//                             //donnée à encoder avec le token: payload
+//                             {userId : user._id},
+//                             'random_token_secret',
+//                             {expiresIn : '24h'}
+//                         )
+//                     })
+//                 }
+//             })
+//             .catch(error => {
+//                 res.status(500).json({ error });
+//             })
+//         }
+//     })
+//     .catch(error => {
+//         res.status(500).json({ error });
+//     })
+// };

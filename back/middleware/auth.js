@@ -15,7 +15,7 @@ module.exports = (req, res, next) => {
     try{
 
         //la première entrée du token est le mot bearer, on prend l'index 1 avec split pour obtenir le token seul.
-        const token = req.authorization.split(' ')[1];
+        const token = req.headers.authorization.split(' ')[1];
         const decodedToken = jwt.verify(token, 'random_token_secret');
         const userId = decodedToken.userId;
         req.auth = {
@@ -24,4 +24,4 @@ module.exports = (req, res, next) => {
     } catch(error) {
         res.status(401).json({error});
     }
-}
+};
