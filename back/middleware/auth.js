@@ -22,6 +22,9 @@ module.exports = (req, res, next) => {
             userId : userId
         }
     } catch(error) {
-        res.status(401).json({error});
+
+        //la il faudrait mettre un message 403: unauthorized request
+        res.status(403).json({error});
+        console.log('403: unauthorized request');
     }
 };

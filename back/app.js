@@ -9,12 +9,15 @@
 
 const express = require('express');
 const mongoose = require('mongoose');
-const Sauce = require('./models/sauces');
 
+const Sauce = require('./models/sauces');
 const User = require('./models/user');
 
 const saucesRoute = require('./routes/sauces')
 const userRoutes = require('./routes/user');
+
+//pour pas avoir d'erreur de cors mais on peut plus se connecter :SUPER!
+//const cors = require('cors');
 
 mongoose.connect('mongodb+srv://simpson:zri76KHKJ@cluster0.vvm1rmn.mongodb.net/?retryWrites=true&w=majority',
   { useNewUrlParser: true,
@@ -24,6 +27,7 @@ mongoose.connect('mongodb+srv://simpson:zri76KHKJ@cluster0.vvm1rmn.mongodb.net/?
 
 const app = express();
 
+//app.use(cors);
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
@@ -59,8 +63,5 @@ app.use('/api/sauces', saucesRoute);
 //     .catch(error => res.status(400).json({ error }));
 
 // });
-
-
-
 
 module.exports = app;
