@@ -13,8 +13,10 @@ const mongoose = require('mongoose');
 const Sauce = require('./models/sauces');
 const User = require('./models/user');
 
-const saucesRoute = require('./routes/sauces')
+const saucesRoute = require('./routes/sauces');
 const userRoutes = require('./routes/user');
+
+const path = require('path');
 
 //pour pas avoir d'erreur de cors mais on peut plus se connecter :SUPER!
 //const cors = require('cors');
@@ -45,12 +47,14 @@ app.use((req, res, next) => {
 
 
 
-//routes c'est pour pouvoir donner n'importe quel chemin à un fichier?
+//faire des routes c'est pour pouvoir donner n'importe quel chemin à un fichier?
 app.use('/api/auth', userRoutes);
 
 //Utiliser la logique codée dans le fichier sauces.js dossier routes.
 app.use('/api/sauces', saucesRoute);
 
+//en rapport avec les images...
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //Ajouter un nouvel utilisateur dans la DB
 // app.post('/api/auth/signup', (req, res, next) => {

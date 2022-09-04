@@ -11,13 +11,13 @@ const router = express.Router();
 const sauceControl = require('../controllers/sauces');
 
 //recevoir et enregistrer une sauce dans la DB
-router.post('/', auth, sauceControl.createSauce);
+router.post('/', auth, multer, sauceControl.createSauce);
   
 //récupérer une sauce avec son ID
 router.get('/:id', auth, sauceControl.getOneSauce);
   
 //Modifier une sauce 
-router.put('/:id', auth, sauceControl.modifySauce);
+router.put('/:id', auth, multer, sauceControl.modifySauce);
 
 //Supprimer une sauce 
 router.delete('/:id', auth, sauceControl.deleteSauce);
