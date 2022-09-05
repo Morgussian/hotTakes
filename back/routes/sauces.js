@@ -12,7 +12,10 @@ const sauceControl = require('../controllers/sauces');
 
 //recevoir et enregistrer une sauce dans la DB
 router.post('/', auth, multer, sauceControl.createSauce);
-  
+
+//récupérer toutes les sauces de la DB
+router.get('/', auth, sauceControl.getAllSauces);
+
 //récupérer une sauce avec son ID
 router.get('/:id', auth, sauceControl.getOneSauce);
   
@@ -22,7 +25,6 @@ router.put('/:id', auth, multer, sauceControl.modifySauce);
 //Supprimer une sauce 
 router.delete('/:id', auth, sauceControl.deleteSauce);
 
-//récupérer toutes les sauces de la DB
-router.get('/', auth, sauceControl.getAllSauces);
+
 
 module.exports = router;
