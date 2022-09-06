@@ -53,19 +53,7 @@ app.use('/api/auth', userRoutes);
 //Utiliser la logique codée dans le fichier sauces.js dossier routes.
 app.use('/api/sauces', saucesRoute);
 
-//en rapport avec les images...
+//rendre publiques les données ce dossiere est accessible à tout le monde
 app.use('/images', express.static(path.join(__dirname, 'images')));
-
-//Ajouter un nouvel utilisateur dans la DB
-// app.post('/api/auth/signup', (req, res, next) => {
-//   const user = new User ({
-//     ...req.body
-//   });
-  
-//   user.save()
-//     .then(() => res.status(201).json({ message: 'Objet enregistré !'}))
-//     .catch(error => res.status(400).json({ error }));
-
-// });
 
 module.exports = app;

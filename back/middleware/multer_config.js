@@ -24,7 +24,9 @@ const storage = multer.diskStorage({
         //split sépare une string en array avec autant d'entrées que d'espaces rencontrés
         //join joint un array en string avec '_' entre les entrées. 
         const name = file.originalname.split(' ').join('_');
-        const extension = MIME_TYPE(file.mimetype);
+
+        //Nathan MIME_TYPE(file.mimetype); à l'origine des parentheses
+        const extension = MIME_TYPE[file.mimetype];
 
         //création du nom du fichier
         // Date.now est un timeStamp pour que le nom généré soit unique

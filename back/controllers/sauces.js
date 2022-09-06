@@ -7,7 +7,7 @@
 * @copyright 2022 Morgussian
 */
 
-const sauce = require('../models/sauces');
+const Sauce = require('../models/sauces');
 const fs = require('fs');
 
 //recevoir et enregistrer une sauce dans la DB

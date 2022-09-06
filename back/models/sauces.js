@@ -2,7 +2,12 @@ const mongoose = require('mongoose');
 
 // ajouter ,required : 'true' sur les entrées si on veut...
 const sauceSchema = mongoose.Schema({
-    userId : { type : String },
+    userId : { 
+
+        //Nathan
+        type : mongoose.Schema.Types.ObjectId,
+        ref: 'users'
+    },
     name : { type : String },
     manufacturer : { type : String },
     description : { type : String },
@@ -11,8 +16,18 @@ const sauceSchema = mongoose.Schema({
     heat : { type : Number },
     likes : { type : Number},
     dislikes : { type : Number},
-    usersLiked : [String],
-    usersDisliked : [String],
+    usersLiked : [{
+
+        //Nathan
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users'
+    }],
+    usersDisliked : [{
+
+        //Nathan
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users'
+    }],
 });
 
-module.exports = mongoose.model('Sauce', sauceSchema);
+module.exports = mongoose.model('sauces', sauceSchema);
