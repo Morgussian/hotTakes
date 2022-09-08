@@ -13,10 +13,10 @@ const sauces = require('../models/sauces');
 
 //comptage des like/dislike ça marche pas
 function likeDislikeUpdater() {
-    let likes = sauces.likes.lenght;
-    let dislikes = sauces.dislikes.lenght;
+    let likes = sauces.usersLiked.length;
+    let dislikes = sauces.usersDisliked.length;
 
-    return likes, dislikes;
+    return likes;
     
 
 }
@@ -111,36 +111,41 @@ exports.getAllSauces = (req, res) => {
 exports.likeDislike = (req, res, next) => {
     let id = req.body.userId;
     let likeStatus = req.body.like;
+    const sauceId = req.params.id;
 
     //l'utilisateur like
     if(likeStatus === 1){
-        sauces.updateOne({ _id: req.params.id}, { /*$inc: {likes: 1},*/ $push: {usersLiked: id}})
+        sauces.updateOne({ _id: sauceId}, { $inc: {likes: 1}, $push: {usersLiked: id}})
             .then(() => res.status(201).json({message: 'Like'}))
             .catch(error => res.status(400).json (error))
     }
 
     //l'utilisateur dislike la sauce
     if(likeStatus === -1){
-        sauces.updateOne({ _id: req.params.id}, { /*$inc: {dislikes: 1},*/ $push: {usersDisliked: id}})
+        sauces.updateOne({ _id: sauceId}, { $inc: {dislikes: 1}, $push: {usersDisliked: id}})
             .then(() => res.status(201).json({message: 'dislike'}))
             .catch(error => res.status(400).json (error))
     }
 
     //l'utilisateur ne like plus (mais c'est pas un dislike)
     if (likeStatus === 0) {
-        sauces.updateOne({ _id: req.params.id }, { /*$inc: { likes: -1 },*/ $pull: { usersLiked: id } })
-            .then(() => {
-                return sauces.updateOne(
-                    { _id: req.params.id },
-                    { /*$inc: { dislikes: -1 },*/ $pull: { usersDisliked: id } }
-                );
+        sauces.findOne({ _id: sauceId })
+            .then((sauce) => {
+                if(sauce.usersLiked.includes(id)){
+                    sauces.updateOne({ _id: sauceId }, { $inc: { likes: -1 }, $pull: { usersLiked: id } })
+                        
+                        .then(() => {res.status(201).json({ message: ['Like has been canceled', 'Dislike has been canceled'] })})
+                        .catch((error) => res.status(400).json(error))
+                }
+                if(sauce.usersDisliked.includes(id)){
+                    sauces.updateOne({ _id: sauceId }, { $inc: { likes: -1 }, $pull: { usersdisliked: id } })
+                        
+                        .then(() => {res.status(201).json({ message: ['Like has been canceled', 'Dislike has been canceled'] })})
+                        .catch((error) => res.status(400).json(error))
+                }
             })
-            .then(() => {
-                res.status(201).json({ message: ['Like has been canceled', 'Dislike has been canceled'] });
-            })
-            .catch((error) => res.status(400).json(error));
+            .catch((error) => res.status(400).json(error))
     }
-    return {$size : sauces.like}, {$size : sauces.dislike};
     
 }
 
@@ -163,3 +168,20 @@ exports.likeDislike = (req, res, next) => {
 
 //     next()
 // };
+
+//l'utilisateur ne like plus (mais c'est pas un dislike)
+// if (likeStatus === 0) {
+//     sauces.updateOne({ _id: req.params.id }, { /*$inc: { likes: -1 },*/ $pull: { usersLiked: id } })
+//         .then(() => {
+//             return sauces.updateOne(
+//                 { _id: req.params.id },
+//                 { /*$inc: { dislikes: -1 },*/ $pull: { usersDisliked: id } }
+//             );
+//         })
+//         .then(() => {
+//             res.status(201).json({ message: ['Like has been canceled', 'Dislike has been canceled'] });
+            
+            
+//         })
+//         .catch((error) => res.status(400).json(error));
+// }
