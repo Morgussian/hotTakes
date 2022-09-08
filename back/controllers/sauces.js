@@ -134,13 +134,13 @@ exports.likeDislike = (req, res, next) => {
                 if(sauce.usersLiked.includes(id)){
                     sauces.updateOne({ _id: sauceId }, { $inc: { likes: -1 }, $pull: { usersLiked: id } })
                         
-                        .then(() => {res.status(201).json({ message: ['Like has been canceled', 'Dislike has been canceled'] })})
+                        .then(() => {res.status(201).json({ message: ['Like has been canceled'] })})
                         .catch((error) => res.status(400).json(error))
                 }
                 if(sauce.usersDisliked.includes(id)){
-                    sauces.updateOne({ _id: sauceId }, { $inc: { likes: -1 }, $pull: { usersdisliked: id } })
+                    sauces.updateOne({ _id: sauceId }, { $inc: { dislikes: -1 }, $pull: { usersDisliked: id } })
                         
-                        .then(() => {res.status(201).json({ message: ['Like has been canceled', 'Dislike has been canceled'] })})
+                        .then(() => {res.status(201).json({ message: ['Dislike has been canceled'] })})
                         .catch((error) => res.status(400).json(error))
                 }
             })
@@ -149,6 +149,12 @@ exports.likeDislike = (req, res, next) => {
     
 }
 
+//Nathan:
+// res.status(200).json({
+//     ...sauce,
+//     likes: sauce?.userLiked.length,
+//     dislikes: sauce?.userDisliked.length
+//   })
 
 // exports.likeDislike = (req, res, next) => {
 //     const id = req.body.userId;
