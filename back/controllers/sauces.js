@@ -9,6 +9,17 @@
 
 const Sauce = require('../models/sauces');
 const fs = require('fs');
+const sauces = require('../models/sauces');
+
+//comptage des like/dislike ça marche pas
+function likeDislikeUpdater() {
+    let likes = sauces.likes.lenght;
+    let dislikes = sauces.dislikes.lenght;
+
+    return likes, dislikes;
+    
+
+}
 
 //recevoir et enregistrer une sauce dans la DB
 exports.createSauce = (req, res) => {
@@ -87,7 +98,68 @@ exports.deleteSauce = (req, res) => {
 
 //récupérer toutes les sauces de la DB
 exports.getAllSauces = (req, res) => {
-    Sauce.find()
-        .then(sauces => res.status(200).json({ sauces }))
-        .catch(error => res.status(400).json({error}));
+    sauces.find()
+
+        //send plutôt que json et pas d'accolades pour faire comme un autre élève. Ca a l'air de marcher!!!
+        .then(sauces => res.status(200).send( sauces ))
+        .catch(error => res.status(400).send(error));
 };
+
+//liker ou disliker une sauce. Je ne pense pas que $inc soit utile dans ce cas:
+//Je veux compter les array usersLiked et usersDisliked
+
+exports.likeDislike = (req, res, next) => {
+    let id = req.body.userId;
+    let likeStatus = req.body.like;
+
+    //l'utilisateur like
+    if(likeStatus === 1){
+        sauces.updateOne({ _id: req.params.id}, { /*$inc: {likes: 1},*/ $push: {usersLiked: id}})
+            .then(() => res.status(201).json({message: 'Like'}))
+            .catch(error => res.status(400).json (error))
+    }
+
+    //l'utilisateur dislike la sauce
+    if(likeStatus === -1){
+        sauces.updateOne({ _id: req.params.id}, { /*$inc: {dislikes: 1},*/ $push: {usersDisliked: id}})
+            .then(() => res.status(201).json({message: 'dislike'}))
+            .catch(error => res.status(400).json (error))
+    }
+
+    //l'utilisateur ne like plus (mais c'est pas un dislike)
+    if (likeStatus === 0) {
+        sauces.updateOne({ _id: req.params.id }, { /*$inc: { likes: -1 },*/ $pull: { usersLiked: id } })
+            .then(() => {
+                return sauces.updateOne(
+                    { _id: req.params.id },
+                    { /*$inc: { dislikes: -1 },*/ $pull: { usersDisliked: id } }
+                );
+            })
+            .then(() => {
+                res.status(201).json({ message: ['Like has been canceled', 'Dislike has been canceled'] });
+            })
+            .catch((error) => res.status(400).json(error));
+    }
+    return {$size : sauces.like}, {$size : sauces.dislike};
+    
+}
+
+
+// exports.likeDislike = (req, res, next) => {
+//     const id = req.body.userId;
+//     const likeStatus = req.body.like;
+
+//     //updateOne + $push = methode push de mongoose = ça marche pas
+//     if(likeStatus == 1){
+//         Sauce.usersLiked.updateOne({
+//             $push: { id }
+//         })
+//     };
+//     if(likeStatus == 1){
+//         Sauce.usersDisliked.updateOne({
+//             $push: { id }
+//         })
+//     };
+
+//     next()
+// };

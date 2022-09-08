@@ -16,7 +16,7 @@ const jwt = require('jsonwebtoken');
 //pourquoi une majuscule???
 const User = require('../models/user');
 
-//inscription d'un user
+//inscription d'un user. on va utiliser await pour certaines fonctions asynchrones donc: préciser "async"
 exports.signup = async (req, res) => {
 
     const userCheck = await User.findOne({ email: req.body.email })
@@ -66,7 +66,7 @@ exports.login = async (req, res) => {
     //pareil isValid est-il une fonction?
     const isValid = await bcrypt.compare(req.body.password, user.password) //Nathan  true || false
     if (!isValid) {
-        return res.status(401).json({message : 'Ce password est incorrect'});
+        return res.status(401).json({message : 'Ce mot de passe est incorrect'});
     }
     
     res.status(200).json({

@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 
 // ajouter ,required : 'true' sur les entrées si on veut...
 const sauceSchema = mongoose.Schema({
+
+    //utilisateur qui a créé la sauce
     userId : { 
 
         //Nathan

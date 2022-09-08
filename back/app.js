@@ -10,9 +10,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
-const Sauce = require('./models/sauces');
-const User = require('./models/user');
-
 const saucesRoute = require('./routes/sauces');
 const userRoutes = require('./routes/user');
 

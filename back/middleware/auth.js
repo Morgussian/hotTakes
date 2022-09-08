@@ -27,6 +27,7 @@ module.exports = async (req, res, next) => {
             return res.status(403).json({error: "invalid token"})
         }
         
+        //expiration du token : 24 heures
         if (decodedToken.expiresIn < Date.now()) {  // Date.now() -> 124454512ms  expiresIn -> 124444512ms
             return res.status(403).json({error: "Token expired"})
         }
