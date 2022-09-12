@@ -40,7 +40,7 @@ module.exports = async (req, res, next) => {
         req.auth = {
             userId : userId
         }
-        
+        next()
     } catch(error) {
 
         //la il faudrait mettre un message 403: unauthorized request
