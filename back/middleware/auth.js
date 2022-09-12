@@ -9,10 +9,6 @@
 
 const jwt = require('jsonwebtoken');
 
-//middleware d'authentification user
-//il doit être passé aux routes: fichier censé être dans routes. Pour l'instant pas encore codé.
-
-
 const UserSchema = require('../models/user');
 
 //middleware d'authentification user
@@ -21,7 +17,7 @@ module.exports = async (req, res, next) => {
     try{
         //la première entrée du token est le mot bearer, on prend l'index 1 avec split pour obtenir le token seul.
         const token = req.headers.authorization.split(' ')[1]; // authorization: Bearer sdf4sd45fsd4f
-        const decodedToken = jwt.verify(token, 'TBim86yAz5jvWduq4oDv');
+        const decodedToken = jwt.verify(token, `${process.env.TOKEN}`);
         
         if (!decodedToken) {
             return res.status(403).json({error: "invalid token"})
@@ -41,7 +37,7 @@ module.exports = async (req, res, next) => {
         req.auth = {
             userId : userId
         }
-        next()
+        
     } catch(error) {
 
         //la il faudrait mettre un message 403: unauthorized request

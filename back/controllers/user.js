@@ -7,6 +7,9 @@
 * @copyright 2022 Morgussian
 */
 
+//constante de salage de bcrypt
+const salt = parseInt(process.env.HASH_SALT_NUMBER);
+
 //plugin de cryptage pour le password
 const bcrypt = require('bcrypt');
 
@@ -24,8 +27,10 @@ exports.signup = async (req, res) => {
         return res.status(401).json({message : 'cet utilisateur a déjà été créé.'});
     }
 
-    //Nathan hash est une fonction asynchrone il faut que le script attende encryptedPassword
-    const encryptedPassword = await bcrypt.hash(req.body.password, 10);
+    //hash est une fonction asynchrone il faut que le script attende encryptedPassword
+    //la variable d'environnement déclarée L12 pour le salage nécéssite parseInt!!.
+    const encryptedPassword = await bcrypt.hash(req.body.password, salt);
+    console.log(encryptedPassword);
     const user = new User({
         email: req.body.email,
         password: encryptedPassword,
@@ -34,37 +39,21 @@ exports.signup = async (req, res) => {
     user.save()
         .then(res.status(201).json({message: 'Utilisateur créé.'}))
         .catch(error => res.status(400).json({error}));
-
-    // //méthode de hash du mot de passe, salé 10 fois
-    // bcrypt.hash(req.body.password, 10)
-    //     .then(hash => {
-
-    //         //construction d'un objet user, modèle mongoose
-    //         const user = new User({
-    //             email: req.body.email,
-    //             password: hash,
-    //         });
-    //         user.save()
-    //             .then(res.status(201).json({message: 'Utilisateur créé.'}))
-    //             .catch(error => res.status(400).json({error}));
-    //     })
-    //     .catch(error => res.status(500).json({error}));
+   
 };
 
 //connexion d'un user 
 
 exports.login = async (req, res) => {
 
-    //nathan: findOne est fonction asynchrone. C'est une promise mais on fait pas then catch.
-    //const user n'est pas juste l'email? je sais pas ce que c'est 
-    //c'est quoi User ici? 
+    //findOne est fonction asynchrone. C'est une promise mais on fait pas then catch.
     const user = await User.findOne({ email: req.body.email })
     if (!user) {
         return res.status(401).json({message : 'Vous n\'êtes pas inscrit: Identification impossible'});
     }
     
-    //pareil isValid est-il une fonction?
-    const isValid = await bcrypt.compare(req.body.password, user.password) //Nathan  true || false
+    //bcrypt peut comparer le password de la requête au hash de la DB
+    const isValid = await bcrypt.compare(req.body.password, user.password) //true || false
     if (!isValid) {
         return res.status(401).json({message : 'Ce mot de passe est incorrect'});
     }
@@ -75,7 +64,7 @@ exports.login = async (req, res) => {
             //donnée à encoder avec le token: payload
             //user _id est généré par mongo. normal qu'il fasse pas partie du schéma User
             {userId : user._id},
-            'TBim86yAz5jvWduq4oDv',
+            `${process.env.TOKEN}`,
             {expiresIn : '24h'}
         )
     })

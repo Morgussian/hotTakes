@@ -7,18 +7,22 @@
 * @copyright 2022 Morgussian
 */
 
+//ne pas commenter!!! placer des variables d'environnement dans le fichier .env
+const dotenv = require('dotenv').config('./.env');
+
+
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 
 const saucesRoute = require('./routes/sauces');
 const userRoutes = require('./routes/user');
 
 const path = require('path');
 
-//pour pas avoir d'erreur de cors mais on peut plus se connecter :SUPER!
-//const cors = require('cors');
 
-mongoose.connect('mongodb+srv://simpson:zri76KHKJ@cluster0.vvm1rmn.mongodb.net/?retryWrites=true&w=majority',
+//'mongodb+srv://simpson:zri76KHKJ@cluster0.vvm1rmn.mongodb.net/?retryWrites=true&w=majority'
+mongoose.connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_CLUSTER_NAME}.mongodb.net/?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
     useUnifiedTopology: true }) 
   .then(() => console.log('Connexion à MongoDB réussie !'))
@@ -26,12 +30,13 @@ mongoose.connect('mongodb+srv://simpson:zri76KHKJ@cluster0.vvm1rmn.mongodb.net/?
 
 const app = express();
 
-//app.use(cors);
 app.use(express.json());
 app.use(express.urlencoded({
   extended: true
 }));
 
+//helmet sécurise l'emploi des headers
+app.use(helmet());
 
 //résout les pb de CORS headers dans express
 app.use((req, res, next) => {
@@ -40,7 +45,6 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
 });
-
 
 
 

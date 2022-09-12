@@ -13,11 +13,11 @@ const sauces = require('../models/sauces');
 
 //comptage des like/dislike ça marche pas
 function likeDislikeUpdater() {
-    let likes = sauces.usersLiked.length;
-    let dislikes = sauces.usersDisliked.length;
-
-    return likes;
-    
+    res.status(200).json({
+            ...Sauce,
+            likes: Sauce?.userLiked.length,
+            dislikes: Sauce?.userDisliked.length
+          })
 
 }
 
@@ -112,23 +112,26 @@ exports.likeDislike = (req, res, next) => {
     let id = req.body.userId;
     let likeStatus = req.body.like;
     const sauceId = req.params.id;
+    const LIKE_WORKFLOW = 1
+    const DISLIKE_WORKFLOW = -1
+    const UNCHECK_WORKFLOW = 0
 
     //l'utilisateur like
-    if(likeStatus === 1){
+    if(likeStatus === LIKE_WORKFLOW){
         sauces.updateOne({ _id: sauceId}, { $inc: {likes: 1}, $push: {usersLiked: id}})
             .then(() => res.status(201).json({message: 'Like'}))
             .catch(error => res.status(400).json (error))
     }
 
     //l'utilisateur dislike la sauce
-    if(likeStatus === -1){
+    if(likeStatus === DISLIKE_WORKFLOW){
         sauces.updateOne({ _id: sauceId}, { $inc: {dislikes: 1}, $push: {usersDisliked: id}})
             .then(() => res.status(201).json({message: 'dislike'}))
             .catch(error => res.status(400).json (error))
     }
 
     //l'utilisateur ne like plus (mais c'est pas un dislike)
-    if (likeStatus === 0) {
+    if (likeStatus === UNCHECK_WORKFLOW) {
         sauces.findOne({ _id: sauceId })
             .then((sauce) => {
                 if(sauce.usersLiked.includes(id)){

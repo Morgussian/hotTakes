@@ -8,12 +8,13 @@
 */
 
 const express = require('express');
-
 const router = express.Router();
-
 const userControl = require('../controllers/user')
 
+//middleware de limitation de login
+const loginLimiter = require('../middleware/express_rate_limiter');
+
 router.post('/signup', userControl.signup);
-router.post('/login', userControl.login);
+router.post('/login', loginLimiter.limiterConfig, userControl.login);
 
 module.exports = router;
