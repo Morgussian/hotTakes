@@ -11,13 +11,16 @@ const jwt = require('jsonwebtoken');
 
 const UserSchema = require('../models/user');
 
+
+
 //middleware d'authentification user
 //il doit être passé aux routes: fichier censé être dans routes. Pour l'instant pas encore codé.
 module.exports = async (req, res, next) => {
     try{
+        const envToken = process.env.TOKEN;
         //la première entrée du token est le mot bearer, on prend l'index 1 avec split pour obtenir le token seul.
         const token = req.headers.authorization.split(' ')[1]; // authorization: Bearer sdf4sd45fsd4f
-        const decodedToken = jwt.verify(token, `${process.env.TOKEN}`);
+        const decodedToken = jwt.verify(token, envToken);
         
         if (!decodedToken) {
             return res.status(403).json({error: "invalid token"})

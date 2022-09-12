@@ -19,6 +19,8 @@ const jwt = require('jsonwebtoken');
 //pourquoi une majuscule???
 const User = require('../models/user');
 
+
+
 //inscription d'un user. on va utiliser await pour certaines fonctions asynchrones donc: préciser "async"
 exports.signup = async (req, res) => {
 
@@ -57,14 +59,16 @@ exports.login = async (req, res) => {
     if (!isValid) {
         return res.status(401).json({message : 'Ce mot de passe est incorrect'});
     }
-    
+
+    //déclaration d'une variable TOKEN ça a tout cassé.
+    const envToken = process.env.TOKEN;
     res.status(200).json({
         userId: user._id,
         token:  jwt.sign(
             //donnée à encoder avec le token: payload
             //user _id est généré par mongo. normal qu'il fasse pas partie du schéma User
             {userId : user._id},
-            `${process.env.TOKEN}`,
+            envToken,
             {expiresIn : '24h'}
         )
     })
