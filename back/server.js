@@ -1,7 +1,7 @@
 /**
 * Ce fichier fait partie du projet piikante.
 *
-* je sais pas à quoi ça sert
+* Mise en place du serveur
 *
 * 
 * @copyright 2022 Morgussian

@@ -13,11 +13,19 @@ const UserSchema = require('../models/user');
 
 
 
-//middleware d'authentification user
-//il doit être passé aux routes: fichier censé être dans routes. Pour l'instant pas encore codé.
+/**
+ * authentification d'un user. on va utiliser await pour certaines fonctions asynchrones donc: préciser "async"
+ *
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next 
+ */
 module.exports = async (req, res, next) => {
     try{
+
+        //variable d'environnement contenant la clé de TOKEN
         const envToken = process.env.TOKEN;
+
         //la première entrée du token est le mot bearer, on prend l'index 1 avec split pour obtenir le token seul.
         const token = req.headers.authorization.split(' ')[1]; // authorization: Bearer sdf4sd45fsd4f
         const decodedToken = jwt.verify(token, envToken);
@@ -43,29 +51,9 @@ module.exports = async (req, res, next) => {
         next()
     } catch(error) {
 
-        //la il faudrait mettre un message 403: unauthorized request
+        //message 403: unauthorized request
         res.status(403).json({error});
     }
 };
 
-// module.exports = (req, res, next) => {
-//     try{
 
-//         //la première entrée du token est le mot bearer, on prend l'index 1 avec split pour obtenir le token seul.
-//         const token = req.headers.authorization.split(' ')[1];
-//         const decodedToken = jwt.verify(token, 'sjksjk0978978jJKLJK_ç-');
-//         const userId = decodedToken.userId;
-//         req.auth = {
-//             userId : userId
-        
-//         }
-
-//         //Nathan
-//         next();
-//     } catch(error) {
-
-//         //la il faudrait mettre un message 403: unauthorized request
-//         res.status(403).json({error});
-//         console.log('403: unauthorized request');
-//     }
-// };

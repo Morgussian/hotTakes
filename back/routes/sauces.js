@@ -1,3 +1,13 @@
+/**
+* Ce fichier fait partie du projet piikante.
+*
+* Contient les routes des requêtes relatives aux sauces: get, post, put et delete.
+*
+* 
+* @copyright 2022 Morgussian
+*/
+
+
 const express = require('express');
 const mongoose = require('mongoose');
 const multer = require('../middleware/multer_config');

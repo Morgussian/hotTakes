@@ -1,17 +1,25 @@
 /**
 * Ce fichier fait partie du projet piikante.
 *
-* Il contient la logique pour la manipulation des sauces
+* Il contient la logique pour la manipulation des sauces (CRUD)
 *
 * 
 * @copyright 2022 Morgussian
 */
 
 const Sauce = require('../models/sauces');
+
+//"file system": module permettant la gestion de fichiers (créer, lire, copier etc...)
 const fs = require('fs');
 const sauces = require('../models/sauces');
 
-//comptage des like/dislike ça marche pas
+
+/**
+ * comptage des like/dislike (non utilisé)
+ *
+ * 
+ * 
+ */
 function likeDislikeUpdater() {
     res.status(200).json({
             ...Sauce,
@@ -21,7 +29,12 @@ function likeDislikeUpdater() {
 
 }
 
-//recevoir et enregistrer une sauce dans la DB
+/**
+ * recevoir et enregistrer une sauce dans la DB
+ *
+ * @param {*} req
+ * @param {*} res
+ */
 exports.createSauce = (req, res) => {
     const sauceObject = JSON.parse(req.body.sauce);
     delete sauceObject._id;
@@ -40,14 +53,24 @@ exports.createSauce = (req, res) => {
    .catch(error => { res.status(400).json( { error })});
 };
 
-//récupérer une sauce avec son ID
+/**
+ * Récupération d'une sauce
+ *
+ * @param {*} req
+ * @param {*} res
+ */
 exports.getOneSauce = (req, res) => {
     Sauce.findOne({_id: req.params.id })
         .then(sauce => res.status(200).json(sauce))
         .catch(error => res.status(404).json({error}));
 };
 
-//Modifier une sauce 
+/**
+ * Modification d'une sauce
+ *
+ * @param {*} req
+ * @param {*} res
+ */
 exports.modifySauce = (req, res) => {
     const sauceObject = req.file ? {
         ...JSON.parse(req.body.sauce),
@@ -74,7 +97,12 @@ exports.modifySauce = (req, res) => {
         });
 };
 
-//Supprimer une sauce 
+/**
+ * suppression d'une sauce
+ *
+ * @param {*} req
+ * @param {*} res
+ */
 exports.deleteSauce = (req, res) => {
     //majuscule
     Sauce.findOne({ _id: req.params.id})
@@ -96,18 +124,27 @@ exports.deleteSauce = (req, res) => {
        });
 };
 
-//récupérer toutes les sauces de la DB
+/**
+ * afficher toutes les sauces de la base de données
+ *
+ * @param {*} req
+ * @param {*} res
+ */
 exports.getAllSauces = (req, res) => {
     sauces.find()
 
         //send plutôt que json et pas d'accolades pour faire comme un autre élève. Ca a l'air de marcher!!!
         .then(sauces => res.status(200).send( sauces ))
-        .catch(error => res.status(400).send(error));
+        .catch(error => res.status(400).send(error ));
 };
 
-//liker ou disliker une sauce. Je ne pense pas que $inc soit utile dans ce cas:
-//Je veux compter les array usersLiked et usersDisliked
-
+/**
+ * Gestion des like/dislike avec update des arrays usersliked et usersDisliked
+ *
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
 exports.likeDislike = (req, res, next) => {
     let id = req.body.userId;
     let likeStatus = req.body.like;
@@ -152,45 +189,3 @@ exports.likeDislike = (req, res, next) => {
     
 }
 
-//Nathan:
-// res.status(200).json({
-//     ...sauce,
-//     likes: sauce?.userLiked.length,
-//     dislikes: sauce?.userDisliked.length
-//   })
-
-// exports.likeDislike = (req, res, next) => {
-//     const id = req.body.userId;
-//     const likeStatus = req.body.like;
-
-//     //updateOne + $push = methode push de mongoose = ça marche pas
-//     if(likeStatus == 1){
-//         Sauce.usersLiked.updateOne({
-//             $push: { id }
-//         })
-//     };
-//     if(likeStatus == 1){
-//         Sauce.usersDisliked.updateOne({
-//             $push: { id }
-//         })
-//     };
-
-//     next()
-// };
-
-//l'utilisateur ne like plus (mais c'est pas un dislike)
-// if (likeStatus === 0) {
-//     sauces.updateOne({ _id: req.params.id }, { /*$inc: { likes: -1 },*/ $pull: { usersLiked: id } })
-//         .then(() => {
-//             return sauces.updateOne(
-//                 { _id: req.params.id },
-//                 { /*$inc: { dislikes: -1 },*/ $pull: { usersDisliked: id } }
-//             );
-//         })
-//         .then(() => {
-//             res.status(201).json({ message: ['Like has been canceled', 'Dislike has been canceled'] });
-            
-            
-//         })
-//         .catch((error) => res.status(400).json(error));
-// }

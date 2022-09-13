@@ -13,6 +13,8 @@ const dotenv = require('dotenv').config('./.env');
 
 const express = require('express');
 const mongoose = require('mongoose');
+
+//helmet configure les headers des requêtes
 const helmet = require('helmet');
 
 const saucesRoute = require('./routes/sauces');

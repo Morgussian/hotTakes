@@ -1,3 +1,12 @@
+/**
+* Ce fichier fait partie du projet piikante.
+*
+* Configuration de express rate limit pour éviter une attaque bruteforce du login.
+*
+* 
+* @copyright 2022 Morgussian
+*/
+
 const rateLimit = require('express-rate-limit');
 
 

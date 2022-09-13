@@ -7,11 +7,11 @@
 * @copyright 2022 Morgussian
 */
 
-//constante de salage de bcrypt
-const salt = parseInt(process.env.HASH_SALT_NUMBER);
-
-//plugin de cryptage pour le password
+//plugin de cryptage bcrypt pour le password
 const bcrypt = require('bcrypt');
+
+//constante de salage de bcrypt nécéssite parseInt!!.
+const salt = parseInt(process.env.HASH_SALT_NUMBER);
 
 //appel du package de génération de token npm
 const jwt = require('jsonwebtoken');
@@ -19,9 +19,12 @@ const jwt = require('jsonwebtoken');
 //pourquoi une majuscule???
 const User = require('../models/user');
 
-
-
-//inscription d'un user. on va utiliser await pour certaines fonctions asynchrones donc: préciser "async"
+/**
+ * inscription d'un user. on va utiliser await pour certaines fonctions asynchrones donc: préciser "async"
+ *
+ * @param {*} req
+ * @param {*} res
+ */
 exports.signup = async (req, res) => {
 
     const userCheck = await User.findOne({ email: req.body.email })
@@ -30,7 +33,7 @@ exports.signup = async (req, res) => {
     }
 
     //hash est une fonction asynchrone il faut que le script attende encryptedPassword
-    //la variable d'environnement déclarée L12 pour le salage nécéssite parseInt!!.
+    //salt est la variable d'environnement déclarée L14 pour le salage 
     const encryptedPassword = await bcrypt.hash(req.body.password, salt);
     console.log(encryptedPassword);
     const user = new User({
@@ -44,7 +47,12 @@ exports.signup = async (req, res) => {
    
 };
 
-//connexion d'un user 
+/**
+ * connexion d'un user.
+ *
+ * @param {*} req
+ * @param {*} res
+ */
 
 exports.login = async (req, res) => {
 
@@ -60,7 +68,7 @@ exports.login = async (req, res) => {
         return res.status(401).json({message : 'Ce mot de passe est incorrect'});
     }
 
-    //déclaration d'une variable TOKEN ça a tout cassé.
+    //déclaration d'une variable TOKEN.
     const envToken = process.env.TOKEN;
     res.status(200).json({
         userId: user._id,
@@ -73,32 +81,4 @@ exports.login = async (req, res) => {
         )
     })
 }
-    // .then(user => {
-    //     if(!user){
-    //         res.status(401).json({message : 'Vous n\'êtes pas inscrit: Identification impossible'});
-    //     } else {
-    //         //bcrypt compare le password du body de la requète au password user. password user est un hash créé dans la fonction exports.signup.
-    //         bcrypt.compare(req.body.password, user.password)
-    //         .then(valid => {
-    //             if(!valid){
-    //                 res.status(401).json({message : 'Ce password est incorrect'});
-    //             } else {
-    //                 res.status(200).json({
-    //                     userId : user._id,
-    //                     token : jwt.sign(
-    //                         //donnée à encoder avec le token: payload
-    //                         {userId : user._id},
-    //                         'random_token_secret',
-    //                         {expiresIn : '24h'}
-    //                     )
-    //                 })
-    //             }
-    //         })
-    //         .catch(error => {
-    //             res.status(500).json({ error });
-    //         })
-    //     }
-    // })
-    // .catch(error => {
-    //     res.status(500).json({ error });
-    // })
+   

@@ -15,7 +15,16 @@ const MIME_TYPE = {
     'image/jpeg' : 'jpg',
     'image/png' : 'png'
 }
-
+/**
+     * stockage des images et génération de leurs noms de fichier
+     *
+     * @param {*} destination
+     * @param {*} filename
+     * @param {*} req
+     * @param {*} file
+     * @param {*} callback
+     * @param {*} null
+     */
 const storage = multer.diskStorage({
     destination : (req, file, callback) => {
         callback(null, 'images');
@@ -25,7 +34,7 @@ const storage = multer.diskStorage({
         //join joint un array en string avec '_' entre les entrées. 
         const name = file.originalname.split(' ').join('_');
 
-        //Nathan MIME_TYPE(file.mimetype); à l'origine des parentheses
+        //Nathan MIME_TYPE(file.mimetype).
         const extension = MIME_TYPE[file.mimetype];
 
         //création du nom du fichier
