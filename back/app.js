@@ -23,7 +23,7 @@ const userRoutes = require('./routes/user');
 const path = require('path');
 
 
-//'mongodb+srv://simpson:zri76KHKJ@cluster0.vvm1rmn.mongodb.net/?retryWrites=true&w=majority'
+//connexion à mongoDB
 mongoose.connect(`mongodb+srv://${process.env.MONGODB_USER}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_CLUSTER_NAME}.mongodb.net/?retryWrites=true&w=majority`,
   { useNewUrlParser: true,
     useUnifiedTopology: true }) 
