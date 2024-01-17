@@ -39,12 +39,14 @@ module.exports = async (req, res, next) => {
             return res.status(403).json({error: "Token expired"})
         }
         
+        //userId est extrait du TOKEN
         const userId = decodedToken.userId;
         const user = await UserSchema.findOne({ "_id": userId })
         if (!user) {
             return res.status(403).json({error: "user not found"})
         }
         
+        //auth (un objet userId?) est rattaché à l'objet request
         req.auth = {
             userId : userId
         }

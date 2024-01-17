@@ -35,7 +35,6 @@ exports.signup = async (req, res) => {
     //hash est une fonction asynchrone il faut que le script attende encryptedPassword
     //salt est la variable d'environnement déclarée L14 pour le salage 
     const encryptedPassword = await bcrypt.hash(req.body.password, salt);
-    console.log(encryptedPassword);
     const user = new User({
         email: req.body.email,
         password: encryptedPassword,

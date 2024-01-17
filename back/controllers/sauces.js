@@ -22,11 +22,10 @@ const sauces = require('../models/sauces');
  */
 function likeDislikeUpdater() {
     res.status(200).json({
-            ...Sauce,
-            likes: Sauce?.userLiked.length,
-            dislikes: Sauce?.userDisliked.length
-          })
-
+        ...Sauce,
+        likes: Sauce?.userLiked.length,
+        dislikes: Sauce?.userDisliked.length
+        })
 }
 
 /**
